@@ -5,8 +5,9 @@
 	<meta charset="utf-8">
 	<title>Basic Tablesorter Demo</title>
 	<script src="js/jquery-2.1.1.min.js"></script>
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8"
+		src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
 
 </head>
@@ -40,6 +41,8 @@
 		<p>推荐全页面搜索</p>
 		<div class="div"></div>
 
+
+
 	</div>
 
 	<script>
@@ -53,9 +56,12 @@
 				success: function (data) {
 					if (data.message == "success") {
 						datas = data.data;
-						for (var i = 0; i < datas.length; i++) {
-							loadTable(datas[i]);
-						}
+						$('#myTable').DataTable({
+							"ajax": './standard.json'
+						});
+						// for (var i = 0; i < datas.length; i++) {
+						// 	loadTable(datas[i]);
+						// }
 					}
 				},
 				error: function (data) {
@@ -97,7 +103,8 @@
 			loadTableData();
 		}
 		function loadTableData() {
-			$('#myTable').DataTable();
+
+
 		}
 
 	</script>
