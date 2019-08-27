@@ -53,11 +53,12 @@
 				url: "http://localhost:8010/all",
 				// url:"http://localhost:8010/loan/loans",
 				type: 'GET',
-				success: function (data) {
-					if (data.message == "success") {
-						datas = data.data;
+				success: function (responsedata) {
+					if (responsedata.message == "success") {
+						datas = responsedata.data;
+						console.log(datas);
 						$('#myTable').DataTable({
-							"ajax": './standard.json'
+							data:datas
 						});
 						// for (var i = 0; i < datas.length; i++) {
 						// 	loadTable(datas[i]);
