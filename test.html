@@ -15,13 +15,13 @@
 <body>
 	<div class="demo">
 		<h1><a href="https://github.com/Mottie/tablesorter">需求<em>任务</em></a></h1>
-		<p><a href="https://github.com/Mottie/">新增需求</a>&nbsp;&nbsp;
+		<!-- <p><a href="https://github.com/Mottie/">新增需求</a>&nbsp;&nbsp;
 			<a href="docs/index.html">新增人员</a>
-		</p>
+		</p> -->
 
 		<table class="tablesorter" id="myTable">
 			<thead>
-				<tr>
+				<tr align="left">
 					<th>需求号</th>
 					<th>需求描述</th>
 					<th>开发人员</th>
@@ -29,7 +29,7 @@
 					<th>任务类型</th>
 					<th>分配日期</th>
 					<th>分配者</th>
-					<th>操作</th>
+				
 				</tr>
 			</thead>
 			<tbody id="demand-table">
@@ -37,9 +37,12 @@
 
 			</tbody>
 		</table>
+		推荐全页面搜索，轻点选中。
+		<button id="assign">分配</button>
+		<button id="cancelassign">取消分配</button>
+		<button id="delete">删除</button>
 
-		<p>推荐全页面搜索</p>
-		<div class="div"></div>
+
 
 
 
@@ -49,6 +52,7 @@
 
 		var datas = new Array();
 		$(document).ready(function () {
+			// 数据请求
 			$.ajax({
 				url: "http://localhost:8010/all",
 				// url:"http://localhost:8010/loan/loans",
@@ -58,8 +62,10 @@
 						datas = responsedata.data;
 						console.log(datas);
 						$('#myTable').DataTable({
-							data:datas
+							data: datas
 						});
+						addSelectEvent();
+
 						// for (var i = 0; i < datas.length; i++) {
 						// 	loadTable(datas[i]);
 						// }
@@ -107,6 +113,23 @@
 
 
 		}
+		function addSelectEvent() {
+			var table = $('#myTable').DataTable();
+
+			$('#myTable tbody').on('click', 'tr', function () {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				}
+				else {
+					table.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			});
+			$('#delete').click(function () {
+				table.row('.selected').remove().draw(false);
+			});
+		}
+
 
 	</script>
 </body>

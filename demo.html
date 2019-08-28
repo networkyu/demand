@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+<table id="keeperUserList" class="display table table-striped table-bordered table-hover table-checkable" >
+    <thead>
+        <tr>
+        	<th>
+                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                    <input type="checkbox" name="keeperUserGroup-checkable" class="group-checkable" />
+                    <span></span>
+                </label>
+            </th>
+        	<th class="text-center">序号</th>
+            <th class="text-center">姓名</th>
+            <th class="text-center">昵称</th>
+            <th class="text-center">性别</th>
+            <th class="text-center">手机号码 </th>
+            <th class="text-center">账号状态</th>
+            <th class="text-center">注册时间 </th>
+            <th class="text-center">操作</th>
+        </tr>
+	</thead>
+    <tbody></tbody>
+</table>
+</body>
+<script>
+/**
+ * 初始化列表
+ */
+ function initKeeperUserListTable() {
+	
+	keeperUserList = $('#keeperUserList').DataTable({
+		// ajax配置为function,手动调用异步查询
+		ajax : {
+			type: "GET",
+			url: '/user/list',
+			// 传入已封装的参数
+			data: function(data){
+				data.page = data.start / data.length + 1;
+				data.limit = data.length;
+				// 右上角搜索
+				data.keyword = data.search.value;
+				delete data.search;
+				delete data.columns;
+			},
+			dataType: "json",
+			dataSrc : function(result) {
+				// 后台不实现过滤功能，每次查询均视作全部结果
+				if (result.ret != 0) {
+					bootboxAlert({message : '获取数据失败：' + result.msg});
+				}
+				result.data.rhavs = result.data.rhavs || {};
+				result.recordsTotal = result.data.totalCount || 0;
+				result.recordsFiltered = result.data.totalCount || 0;
+				result.data = result.data.rhavs || [];
+				delete result.data.totalCount;
+				delete result.data.rhavs;
+				return result.data;
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				bootboxAlert({
+					message : '获取列表失败：' + getAjaxErrorResponseContent(XMLHttpRequest, textStatus, errorThrown)
+				});
+			}
+		},
+		scrollX : true,
+		// 每次对 datatable 进行操作时也是请求后台
+		serverSide : true,
+		// 加载状态
+		processing : true,
+		// 默认排序查询,为空则表示取消默认排序否则复选框一列会出现小箭头
+		order: [],
+		// 分页,默认打开
+		paging : true,
+		// 是否禁用原生搜索
+		searching: true,
+		language : CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+		columns : [
+		    CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+		    {
+		    	data : null,
+		    	bSortable : false,
+		    	className : "text-right",
+		    	width : "30px",
+		    	render : function(data, type, row, meta) {
+		    		// 显示行号
+					var startIndex = meta.settings._iDisplayStart;
+					return startIndex + meta.row + 1;
+                        }
+		    }, {
+				data : 'rne',
+				bSortable : false,
+				width : "130px",
+				render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS
+		    }, {
+		    	data : 'name',
+		    	bSortable : false,
+		    	width : "130px",
+		    	render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS
+			}, {
+				data : 'passportv.sex',
+				bSortable : false,
+				width : "30px",
+				className : "text-center",
+				render : function(data, type, row, meta) {
+					if (data == 1) {
+						return '<span title="男" class="icon-symbol-male font-blue"></span>';
+					} else if (data == 2) {
+						return '<span title="女" class="icon-symbol-female font-red"></span>';
+					} else {
+						return '<span title="未知" class="icon-question font-green"></span>';
+					}
+				}
+			}, {
+				data : 'passportv.phone',
+				bSortable : false,
+				width : "60px",
+				className : "text-center",
+				render : CONSTANT.DATA_TABLES.RENDER.ELLIPSIS			
+			}, {
+				data : 'status',
+				bSortable : false,
+				width : "60px",
+				className : "text-center",
+				render : function(data, type, row, meta) {
+					return getKeeperUserStatus(data);
+				}
+			}, {
+				data : 'cdate',
+				bSortable : false,
+				width : "130px",
+				className : "text-center",
+				render : function(data, type, row, meta) {
+					return dateForamtToString(data, 'yyyy-MM-dd hh:mm:ss');
+	                   }
+			}, {
+				data : 'operate',
+				bSortable : false,
+				visible : true,
+				width : '200px',
+				render : function(data, type, full) {
+					
+					var edit = '<button οnclick="editKeeperUserInfo(' + full.passportId + ')" class="btn btn-sm green btn-outline filter-submit margin-bottom">修改</button>';					
+					var detail = '<a target="_blank" href="' + ctxFront + '/crm/keeper/account/info?id=' + full.passportId + '" class="btn btn-sm purple btn-outline filter-cancel">详情</a>';
+										
+					return edit + detail;
+				} 
+			} 
+		],
+		drawCallback : function(settings) {
+			// 取消全选
+			$(":checkbox[name='keeperUserGroup-checkable']").prop('checked', false);
+			// 高亮显示当前行
+			$(settings.nTable).find("tbody tr").click(function(e) {
+				$(e.target).parents('table').find('tr').removeClass('warning');
+				$(e.target).parents('tr').addClass('warning');
+			});
+		},
+		createdRow : function(row, data, dataIndex) {
+			
+			if (data.status == 1) {
+				// 已冻结
+				$(row.children[5]).addClass('danger');
+			} else if (data.status == 2) {
+				// 已停用
+				$(row.children[5]).addClass('warning');
+			} else if (data.status == 3) {
+				// 已注销 
+				$(row.children[5]).addClass('error');
+			}
+		},
+		buttons : [ 
+		    {
+		    	text : '<li class="fa fa-plus"></li> 新增',
+		    	titleAttr : '新增管家账号',
+				className : "btn green",
+				action: function ( e, dt, node, config ) {
+					
+                }
+			}, {
+				text : '<li class="fa fa-search"></li> 搜索',
+				titleAttr : '按条件搜索',
+				className : "btn btn-sm green btn-outline filter-submit margin-bottom",
+				action: function ( e, dt, node, config ) {
+					
+				}
+			}, {
+				extend : "print",
+				className : "btn dark btn-outline"
+			}, {
+				extend : "pdf",
+				className : "btn green btn-outline"
+			}, {
+				extend : "excel",
+				className : "btn yellow btn-outline"
+			} 
+		],
+		//dom:"<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>"
+ 
+	});
+	
+	
+	// 如果 scrollX : true 使用这个$('#keeperUserList_wrapper').on("change", ":checkbox", function() {
+	// 如果 scrollX : false $('#keeperUserList').on("change", ":checkbox", function() { 
+	// 因为  scrollX : true 为true加了滚动条，表头和表体成了两个表格，这个可以查看代码就知道
+	$('#keeperUserList_wrapper').on("change", ":checkbox", function() {
+		// 列表复选框
+	    if ($(this).is("[name='keeperUserGroup-checkable']")) {
+	        // 全选
+	        $(":checkbox", '#keeperUserList').prop("checked",$(this).prop("checked"));
+	    }else{
+	        // 一般复选
+	        var checkbox = $("tbody :checkbox", '#keeperUserList');
+	        $(":checkbox[name='cb-check-all']", '#keeperUserList').prop('checked', checkbox.length == checkbox.filter(':checked').length);
+	    }
+	}).on('preXhr.dt', function(e, settings, data) {
+		// ajax 请求之前事件
+		data.page = data.start / data.length + 1;
+		data.limit = data.length;
+		delete data.start;
+		delete data.order;
+		delete data.search;
+		delete data.length;
+		delete data.columns;
+	});
+	
+	// 搜索框事件
+	$('#keeperUserList_filter input').unbind().keyup(function() {
+		
+		var params = {};
+			
+		if ($(this).val().trim()) {
+			params.keyword = $(this).val().trim();
+		}
+		keeperUserList.settings()[0].ajax.data = params;
+		keeperUserList.ajax.reload();
+	});
+	
+}
+ 
+/**
+ * 搜索
+ */
+function queryKeeperUserList() {
+ 
+	// 添加参数
+	var params = {};
+	
+	if ($('#queryKeeperUserName').val()) {
+		params.name = $('#queryKeeperUserName').val();
+	}
+	if ($('#queryKeeperUserPhone').val()) {
+		params.phone = $('#queryKeeperUserPhone').val();
+	}
+	if ($('#queryKeeperUserStatus').val() != '') {
+		params.status = $('#queryKeeperUserStatus').val();
+	}	
+	if ($('#queryKeeperUserOrderBy').val()) {
+		params.orderBy = $('#queryKeeperUserOrderBy').val();
+	}
+ 
+	keeperUserList.settings()[0].ajax.data = params;
+	keeperUserList.ajax.reload();
+	$('#queryKeeperUserWin').modal('hide');
+} 
+</script>
+</html>
