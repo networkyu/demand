@@ -27,28 +27,43 @@
 
 <body>
     <div class="header">
-            <div class="am-g">
-                    <h1>人员信息</h1>
-                </div>
+        <div class="am-g">
+            <h1>人员信息</h1>
+        </div>
     </div>
 
     <div class="am-g">
         <div class="col-lg-6 col-md-8 col-sm-centered">
-            <form action="" class="am-form">
-                <fieldset class="am-form-set">
-                    <input type="text" placeholder="外包账户" />
-                    <input type="text" placeholder="姓名" />
-                    <input type="email" placeholder="邮箱" />
-                    <input type="password" placeholder="密码" />
-                    <input type="password" placeholder="再输一次密码密码" />
-                </fieldset>
+            <form action="http://localhost:8010/adduser" method="POST" class="am-form" target="_self">
+                <!-- <fieldset class="am-form-set"> -->
+
+                外包账户（*必填）<input type="text" placeholder="外包账户" name="iduser" />
+                姓名（*必填）<input type="text" placeholder="姓名" name="name" />
+                邮箱<input type="email" placeholder="邮箱" name="email" />
+                密码<input type="password" placeholder="密码" name="password" />
+                再输一次密码密码<input type="password" placeholder="再输一次密码密码" name="confimpassword" />
+                <!-- </fieldset> -->
                 <div class="am-cf">
-                        <input type="submit" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl">
-                        <input type="button" name="" value="Excel文件导入^_^" class="am-btn am-btn-default am-btn-sm am-fr">
-                      </div>
+                    <input id="save" type="submit" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl">
+                    <input id="excel" type="button" name="" value="Excel文件导入^_^" class="am-btn am-btn-default am-btn-sm am-fr">
+                </div>
             </form>
             </dvi>
         </div>
 </body>
+<script src="./js/jquery-2.1.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#save').click(function (event) {
+           var name = document.getElementsByName("name")[0].value;
+           var iduser = document.getElementsByName("iduser")[0].value;
+           if(name == "" || iduser == ""){
+                // 如果有一个为空，则不能提交
+                alert("请填入必填项");
+                event.preventDefault();
+           }
+        });
+    });
+</script>
 
 </html>
