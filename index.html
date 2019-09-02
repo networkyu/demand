@@ -29,6 +29,7 @@
 					<th>任务类型</th>
 					<th>分配日期</th>
 					<th>分配者</th>
+					<th>完成日期</th>
 
 				</tr>
 			</thead>
@@ -37,7 +38,7 @@
 
 			</tbody>
 		</table>
-		推荐全页面搜索 轻点选中
+		推荐Search筛选 轻点选中操作
 		<button id="addUser" style="background-color: green;color: white">新增人员</button>
 		<button id="addDemand" style="background-color: green;color: white">新增需求</button>
 		<button id="assign" style="background-color:green;color: white">分配</button>
@@ -58,6 +59,12 @@
 			$('#addUser').click(function () {
 				window.location.href = "adduser.html";
 			});
+			$('#addDemand').click(function () {
+				window.location.href = "adddemand.html";
+			});
+			$('#assign').click(function () {
+				window.location.href = "assign.html";
+			});
 			// 数据请求
 			$.ajax({
 				url: "http://localhost:8010/all",
@@ -72,10 +79,8 @@
 						});
 						addSelectEvent();
 						deleteDemand();
-
-						// for (var i = 0; i < datas.length; i++) {
-						// 	loadTable(datas[i]);
-						// }
+						complete();
+						cancelAssignment();
 					}
 				},
 				error: function (data) {
@@ -135,25 +140,72 @@
 
 		}
 		function deleteDemand() {
-			
+
 			$('#delete').click(function () {
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-				url: "http://localhost:8010/delete",
-				// url:"http://localhost:8010/loan/loans",
-				data:{"iddemand":row[0]},
-				type: 'POST',
-				success: function (responsedata) {
-					console.log(responsedata);
-					console.log(row[0]);
-					table.row('.selected').remove().draw(false);
-				},
-				error: function (data) {
-					alert("服务器错误");
-				},
+					url: "http://localhost:8010/delete",
+					// url:"http://localhost:8010/loan/loans",
+					data: { "iddemand": row[0] },
+					type: 'POST',
+					success: function (responsedata) {
+						console.log(responsedata);
+						console.log(row[0]);
+						table.row('.selected').remove().draw(false);
+					},
+					error: function (data) {
+						alert("服务器错误");
+					},
 				});
-		});
+			});
+		}
+		function complete() {
+			$('#complete').click(function () {
+				var table = $('#myTable').DataTable();
+				var row = table.row('.selected').data();
+				$.ajax({
+					url: "http://localhost:8010/complete",
+					// url:"http://localhost:8010/loan/loans",
+					data: { "iddemand": row[0] },
+					type: 'POST',
+					success: function (responsedata) {
+						console.log(row);
+						row[3] = "已完成";
+						var date = new Date();
+						row[7] = date.getFullYear() + "-" + (date.getMonth() +1) + "-" + date.getDate();
+						table.row('.selected').data(row).draw(false);
+						console.log("成功调用");
+					},
+					error: function (data) {
+						alert("服务器错误");
+					},
+				});
+			});
+		}
+		function cancelAssignment() {
+			$('#cancelassign').click(function () {
+				var table = $('#myTable').DataTable();
+				var row = table.row('.selected').data();
+				$.ajax({
+					url: "http://localhost:8010/cancel",
+					data: { "iddemand": row[0] },
+					type: 'POST',
+					success: function (responsedata) {
+						console.log(row);
+						row[2] = "";
+						row[3] = "待分配";
+						
+						row[5] = "";
+						row[6] = "";
+						row[7] = "";
+						table.row('.selected').data(row).draw(false);
+					},
+					error: function (data) {
+						alert("服务器错误");
+					},
+				});
+			});
 		}
 
 

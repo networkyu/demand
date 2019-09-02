@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="./meiziui/assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="./css/jquery.toast.min.css">
+
     <style>
         .header {
             text-align: center;
@@ -34,7 +36,7 @@
 
     <div class="am-g">
         <div class="col-lg-6 col-md-8 col-sm-centered">
-            <form action="http://localhost:8010/adduser" method="POST" class="am-form" target="_self">
+            <form id="form" action="" method="POST" class="am-form" target="_self">
                 <!-- <fieldset class="am-form-set"> -->
 
                 外包账户（*必填）<input type="text" placeholder="外包账户" name="iduser" />
@@ -44,24 +46,55 @@
                 再输一次密码密码<input type="password" placeholder="再输一次密码密码" name="confimpassword" />
                 <!-- </fieldset> -->
                 <div class="am-cf">
-                    <input id="save" type="submit" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl">
-                    <input id="excel" type="button" name="" value="Excel文件导入^_^" class="am-btn am-btn-default am-btn-sm am-fr">
+                    <input id="save" type="button" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl">
+                    <input id="excel" type="button" name="" value="Excel文件导入^_^"
+                        class="am-btn am-btn-default am-btn-sm am-fr">
                 </div>
             </form>
             </dvi>
         </div>
 </body>
 <script src="./js/jquery-2.1.1.min.js"></script>
+<script src="./js/jquery.toast.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#save').click(function (event) {
-           var name = document.getElementsByName("name")[0].value;
-           var iduser = document.getElementsByName("iduser")[0].value;
-           if(name == "" || iduser == ""){
+            var name = document.getElementsByName("name")[0].value;
+            var iduser = document.getElementsByName("iduser")[0].value;
+            if (name == "" || iduser == "") {
                 // 如果有一个为空，则不能提交
                 alert("请填入必填项");
                 event.preventDefault();
-           }
+            } else {
+                $("#save").attr('disabled',true);
+                // $("#form").attr("action","http://localhost:8010/adduser");
+                // $("#form").submit(function(){return true;});
+                $.ajax({
+                    url: "http://localhost:8010/adduser",
+                    // url:"http://localhost:8010/loan/loans",
+                    type: 'POST',
+                    data: $("#form").serialize(),
+                    success: function (responsedata) {
+                        if (responsedata.result) {
+                            $.toast({
+                                text: "保存成功",
+                                hideAfter: 300   // in milli seconds
+                            })
+                        } else {
+                            $.toast({
+                                text: responsedata.message,
+                                hideAfter: 500   // in milli seconds
+                            })
+                        }
+                    
+                        $("#save").attr('disabled',false);
+                    },
+                    error: function (data) {
+                        alert("错误");
+                        $("#save").attr('disabled',false);
+                    },
+                });
+            }
         });
     });
 </script>
