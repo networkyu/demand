@@ -1,63 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="meiziui/assets/css/amazeui.min.css"/>
-    <link rel="stylesheet" href="meiziui/assets/css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="meiziui/assets/css/amazeui.min.css" />
+  <link rel="stylesheet" href="meiziui/assets/css/admin.css">
+  <link rel="stylesheet" href="./css/jquery.toast.min.css">
 </head>
+
 <body>
-        <style>
-                .header {
-                    text-align: center;
-                }
-        
-                .header h1 {
-                    font-size: 200%;
-                    color: #333;
-                    margin-top: 30px;
-                }
-        
-                .header p {
-                    font-size: 14px;
-                }
-            </style>
-        <div class="header">
-                <div class="am-g">
-                    <h1>需求信息</h1>
-                </div>
-            </div>
-        <!-- <div class="col-sm-centered"> -->
-    <form class="am-form">
-        <div class="am-g am-margin-top-sm">
-          <div class="col-sm-3 am-text-right">
-            需求号
-          </div>
-          <div class="col-sm-7 col-end">
-            <input type="text" class="am-input-sm">
-          </div>
-        </div>
+  <style>
+    .header {
+      text-align: center;
+    }
 
-        <div class="am-g am-margin-top-sm">
-          <div class="col-sm-3 am-text-right">
-            计划用时（单位：天）
-          </div>
-          <div class="col-sm-7 col-end">
-            <input type="text" class="am-input-sm">
-          </div>
-        </div>
+    .header h1 {
+      font-size: 200%;
+      color: #333;
+      margin-top: 30px;
+    }
 
-        <div class="am-g am-margin-top-sm">
-          <div class="col-sm-3 am-text-right">
-            需求描述
-          </div>
-          <div class="col-sm-7 col-end">
-            <textarea rows="4"></textarea>
-          </div>
-        </div>
-      </form>
-      <!-- </div> -->
+    .header p {
+      font-size: 14px;
+    }
+
+    .buttondiv {
+      width: 230px;
+      display: flex;
+      margin: 10px auto;
+    }
+
+    .save {
+      width: 100px;
+      height: auto;
+      margin-right: 30px;
+      background: #0e90d2;
+      text-align: center;
+      font: 15px/30px "微软雅黑";
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    .return {
+      width: 100px;
+      height: auto;
+      background: #e6e6e6;
+      text-align: center;
+      font: 15px/30px "微软雅黑";
+      color: #333;
+      border-radius: 4px;
+    }
+  </style>
+  <div class="header">
+    <div class="am-g">
+      <h1>需求信息</h1>
+    </div>
+  </div>
+  <!-- <div class="col-sm-centered"> -->
+  <form class="am-form" id="form">
+    <div class="am-g am-margin-top-sm">
+      <div class="col-sm-3 am-text-right">
+        需求号(*必填)
+      </div>
+      <div class="col-sm-7 col-end">
+        <input type="text" class="am-input-sm" id="demandno" name="demandno">
+      </div>
+    </div>
+
+    <div class="am-g am-margin-top-sm">
+      <div class="col-sm-3 am-text-right">
+        计划用时（单位：天）
+      </div>
+      <div class="col-sm-7 col-end">
+        <input type="text" class="am-input-sm" id="planLength">
+      </div>
+    </div>
+    <div class="am-g am-margin-top-sm">
+      <div class="col-sm-3 am-text-right">
+        类型
+      </div>
+      <div class="col-sm-7 col-end">
+        <select id="type" name="type">
+          <option value="0">寿险核心</option>
+          <option value="1">核心打印平台</option>
+          <option value="2">电子打印平台</option>
+          <option value="3">银保通打印</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="am-g am-margin-top-sm">
+      <div class="col-sm-3 am-text-right">
+        需求描述
+      </div>
+      <div class="col-sm-7 col-end">
+        <textarea rows="4" id="topic" name="topic"></textarea>
+      </div>
+    </div>
+    <div class="am-g am-margin-top-sm ">
+      <div class="buttondiv">
+        <input id="save" type="button" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl save ">
+        <input id="return" type="button" name="" value="返回" class="am-btn am-btn-default am-btn-sm am-fr return">
+      </div>
+
+    </div>
+  </form>
+
+  <!-- </div> -->
+  <script src="./js/jquery-2.1.1.min.js"></script>
+  <script src="./js/jquery.toast.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#return').click(function (event) {
+        history.back();
+      });
+
+      $('#save').click(function (event) {
+        var demandno = $('#demandno').value;
+
+        if (demandno == "") {
+          // 如果有一个为空，则不能提交
+          alert("请填入必填项");
+        } else {
+          $("#save").attr('disabled', true);
+          // $("#form").attr("action","http://localhost:8010/adduser");
+          // $("#form").submit(function(){return true;});
+          $.ajax({
+            url: "http://localhost:8010/add",
+            // url:"http://localhost:8010/loan/loans",
+            type: 'POST',
+            data: $("#form").serialize(),
+            success: function (responsedata) {
+              if (responsedata.result) {
+                $.toast({
+                  text: "保存成功",
+                  hideAfter: 500   // in milli seconds
+                })
+              } else {
+                $.toast({
+                  text: responsedata.message,
+                  hideAfter: 500   // in milli seconds
+                })
+              }
+
+              $("#save").attr('disabled', false);
+            },
+            error: function (data) {
+              alert("错误");
+              $("#save").attr('disabled', false);
+            },
+          });
+        }
+      });
+    });
+  </script>
 </body>
+
 </html>

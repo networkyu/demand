@@ -38,17 +38,67 @@
         <div class="col-lg-6 col-md-8 col-sm-centered">
             <form id="form" action="" method="POST" class="am-form" target="_self">
                 <!-- <fieldset class="am-form-set"> -->
-
-                外包账户（*必填）<input type="text" placeholder="外包账户" name="iduser" />
+                <!-- <div class="col-sm-3 am-text-right">
+                                需求描述
+                              </div>
+                <input type="text" placeholder="外包账户" name="iduser" />
                 姓名（*必填）<input type="text" placeholder="姓名" name="name" />
                 邮箱<input type="email" placeholder="邮箱" name="email" />
                 密码<input type="password" placeholder="密码" name="password" />
-                再输一次密码密码<input type="password" placeholder="再输一次密码密码" name="confimpassword" />
+                再输一次密码密码<input type="password" placeholder="再输一次密码密码" name="confimpassword" /> -->
                 <!-- </fieldset> -->
+
+                <div class="am-g am-margin-top-sm">
+                    <div class="col-sm-3 am-text-right">
+                        外包账户*
+                    </div>
+                    <div class="col-sm-7 col-end">
+                        <input type="text" class="am-input-sm" name="iduser">
+                    </div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                    <div class="col-sm-3 am-text-right">
+                        姓名*
+                    </div>
+                    <div class="col-sm-7 col-end">
+                        <input type="text" class="am-input-sm" name="name">
+                    </div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                    <div class="col-sm-3 am-text-right">
+                        邮箱
+                    </div>
+                    <div class="col-sm-7 col-end">
+                        <input type="email" class="am-input-sm" name="email">
+                    </div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                    <div class="col-sm-3 am-text-right">
+                       电话
+                    </div>
+                    <div class="col-sm-7 col-end">
+                        <input type="tel" class="am-input-sm" name="tel">
+                    </div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                    <div class="col-sm-3 am-text-right">
+                        公司名称
+                    </div>
+                    <div class="col-sm-7 col-end">
+                        <input type="text" class="am-input-sm" name="company">
+                    </div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                        <div class="col-sm-3 am-text-right">
+                            密码
+                        </div>
+                        <div class="col-sm-7 col-end">
+                            <input type="text" class="am-input-sm" name="password">
+                        </div>
+                    </div>
                 <div class="am-cf">
                     <input id="save" type="button" name="" value="保 存" class="am-btn am-btn-primary am-btn-sm am-fl">
-                    <input id="excel" type="button" name="" value="Excel文件导入^_^"
-                        class="am-btn am-btn-default am-btn-sm am-fr">
+                    <input id="return" type="button" name="" value="返回" class="am-btn am-btn-default am-btn-sm am-fr">
                 </div>
             </form>
             </dvi>
@@ -58,6 +108,10 @@
 <script src="./js/jquery.toast.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('#return').click(function (event) {
+            history.back();
+        });
+
         $('#save').click(function (event) {
             var name = document.getElementsByName("name")[0].value;
             var iduser = document.getElementsByName("iduser")[0].value;
@@ -66,7 +120,7 @@
                 alert("请填入必填项");
                 event.preventDefault();
             } else {
-                $("#save").attr('disabled',true);
+                $("#save").attr('disabled', true);
                 // $("#form").attr("action","http://localhost:8010/adduser");
                 // $("#form").submit(function(){return true;});
                 $.ajax({
@@ -86,12 +140,12 @@
                                 hideAfter: 500   // in milli seconds
                             })
                         }
-                    
-                        $("#save").attr('disabled',false);
+
+                        $("#save").attr('disabled', false);
                     },
                     error: function (data) {
                         alert("错误");
-                        $("#save").attr('disabled',false);
+                        $("#save").attr('disabled', false);
                     },
                 });
             }
