@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/jquery-2.1.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8"
+		src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+</head>
+<body>
+        <table class="display" id="table1">
+                <thead>
+                  <tr align="left">
+                    <th>账户</th>
+                    <th>姓名</th>
+                    <th>邮箱</th>
+                    <th>电话</th>
+                    <th>公司</th>
+                    <th>擅长</th>
+                  </tr>
+                </thead>
+                <!-- <tbody id="demand-table">
+          
+                </tbody> -->
+              </table>
+</body>
+<script>
+        $(document).ready(function() {
+          $('#table1').DataTable();
+          $('#table2').DataTable();
+          $('#table3').DataTable();
+      } );
+        </script>
+</html>

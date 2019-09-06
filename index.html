@@ -63,11 +63,13 @@
 				window.location.href = "adddemand.html";
 			});
 			$('#assign').click(function () {
-				window.location.href = "assign.html";
+				var table = $('#myTable').DataTable();
+				var row = table.row('.selected').data();
+				window.location.href = "./assign.html?id=" + row[0];
 			});
 			// 数据请求
 			$.ajax({
-				url: "http://localhost:8010/all",
+				url: "http://localhost:8010/demand/all",
 				// url:"http://localhost:8010/loan/loans",
 				type: 'GET',
 				success: function (responsedata) {
@@ -145,7 +147,7 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/delete",
+					url: "http://localhost:8010/demand/delete",
 					// url:"http://localhost:8010/loan/loans",
 					data: { "iddemand": row[0] },
 					type: 'POST',
@@ -165,7 +167,7 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/complete",
+					url: "http://localhost:8010/demand/complete",
 					// url:"http://localhost:8010/loan/loans",
 					data: { "iddemand": row[0] },
 					type: 'POST',
@@ -173,7 +175,7 @@
 						console.log(row);
 						row[3] = "已完成";
 						var date = new Date();
-						row[7] = date.getFullYear() + "-" + (date.getMonth() +1) + "-" + date.getDate();
+						row[7] = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 						table.row('.selected').data(row).draw(false);
 						console.log("成功调用");
 					},
@@ -188,14 +190,14 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/cancel",
+					url: "http://localhost:8010/demand/cancel",
 					data: { "iddemand": row[0] },
 					type: 'POST',
 					success: function (responsedata) {
 						console.log(row);
 						row[2] = "";
 						row[3] = "待分配";
-						
+
 						row[5] = "";
 						row[6] = "";
 						row[7] = "";

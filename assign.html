@@ -1,22 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="meiziui/assets/css/amazeui.min.css"/>
-  <link rel="stylesheet" href="meiziui/assets/css/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  <link rel="stylesheet" href="./css/jquery.toast.min.css">
+  <script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 </head>
+
 <body>
-    <div class="am-tabs am-margin" data-am-tabs="">
-        <ul class="am-tabs-nav am-nav am-nav-tabs">
-          <li class="am-active"><a href="#tab1">待业</a></li>
-          <li class=""><a href="#tab2">工作</a></li>
-          <li class=""><a href="#tab3">超时</a></li>
-        </ul>
-        </div>
-  
-        
+  <table class="tablesorter" id="table1">
+    <thead>
+      <tr align="left">
+        <th>账户</th>
+        <th>姓名</th>
+        <th>邮箱</th>
+        <th>电话</th>
+        <th>公司</th>
+        <th>专业</th>
+      </tr>
+    </thead>
+    <tbody id="demand-table">
+
+    </tbody>
+  </table>
+  </div>
+  推荐Search筛选 选中即分配
+  <button id="return" style="background-color: green;color: white">返回</button>
+  <button id="addUser" style="background-color: green;color: white">新增人员</button>
+  <button id="addDemand" style="background-color: green;color: white">新增需求</button>
+  <button id="confirm" style="background-color: green;color: white">确认</button>
+  <button id="delete" style="background-color:red;color: white">删除</button>
+  <script src="./js/jquery.toast.min.js"></script>
+  <script>
+    /**
+* 根据变量名获取匹配值
+*/
+    function getParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return unescape(r[2]); return null;
+    }
+    $(document).ready(function () {
+      $('#return').click(function (event) {
+        history.back();
+      });
+      $('#addUser').click(function () {
+        window.location.href = "adduser.html";
+      });
+      $('#addDemand').click(function () {
+        window.location.href = "adddemand.html";
+      });
+      $('#confirm').click(function () {
+        var table = $('#table1').DataTable();
+        var row = table.row('.selected').data();
+        $.ajax({
+          url: "http://localhost:8010/demand/assignment",
+          // url:"http://localhost:8010/loan/loans",
+          data: { "iduser": row[0], "iddemand": getParam("id"), "assigner": "" },
+          type: 'POST',
+          success: function (responsedata) {
+            $.toast({
+              text: "分配成功,马上返回页面！",
+              hideAfter: 500   // in milli seconds
+            })
+            window.location.href = "./index.html";
+          },
+          error: function (data) {
+            alert("服务器错误");
+          },
+        });
+
+      });
+      $('#delete').click(function () {
+        var table = $('#table1').DataTable();
+        var row = table.row('.selected').data();
+        $.ajax({
+          url: "http://localhost:8010/user/delete",
+          // url:"http://localhost:8010/loan/loans",
+          data: { "iduser": row[0] },
+          type: 'POST',
+          success: function (responsedata) {
+            table.row('.selected').remove().draw(false);
+          },
+          error: function (data) {
+            alert("服务器错误");
+          },
+        });
+      });
+
+      $.ajax({
+        url: "http://localhost:8010/user/all",
+        type: 'GET',
+        success: function (responsedata) {
+          if (responsedata.message == "success") {
+            datas = responsedata.data;
+            console.log(datas);
+            $('#table1').DataTable({
+              data: datas
+            });
+            addSelectEvent();
+
+          }
+        },
+        error: function (data) {
+          alert("错误");
+        },
+      });
+    });
+    function addSelectEvent() {
+      var table = $('#table1').DataTable();
+
+      $('#table1 tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('selected')) {
+          $(this).removeClass('selected');
+        }
+        else {
+          table.$('tr.selected').removeClass('selected');
+          $(this).addClass('selected');
+        }
+      });
+
+    }
+
+  </script>
 </body>
+
 </html>

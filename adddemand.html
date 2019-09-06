@@ -115,12 +115,11 @@
   <script>
     $(document).ready(function () {
       $('#return').click(function (event) {
-        history.back();
+        window.location.href = "./index.html";
       });
 
       $('#save').click(function (event) {
-        var demandno = $('#demandno').value;
-
+        var demandno = $('#demandno').val();
         if (demandno == "") {
           // 如果有一个为空，则不能提交
           alert("请填入必填项");
@@ -129,7 +128,7 @@
           // $("#form").attr("action","http://localhost:8010/adduser");
           // $("#form").submit(function(){return true;});
           $.ajax({
-            url: "http://localhost:8010/add",
+            url: "http://localhost:8010/demand/add",
             // url:"http://localhost:8010/loan/loans",
             type: 'POST',
             data: $("#form").serialize(),

@@ -90,6 +90,14 @@
                 </div>
                 <div class="am-g am-margin-top-sm">
                         <div class="col-sm-3 am-text-right">
+                            擅长
+                        </div>
+                        <div class="col-sm-7 col-end">
+                            <input type="text" class="am-input-sm" name="profession">
+                        </div>
+                    </div>
+                <div class="am-g am-margin-top-sm">
+                        <div class="col-sm-3 am-text-right">
                             密码
                         </div>
                         <div class="col-sm-7 col-end">
@@ -124,7 +132,7 @@
                 // $("#form").attr("action","http://localhost:8010/adduser");
                 // $("#form").submit(function(){return true;});
                 $.ajax({
-                    url: "http://localhost:8010/adduser",
+                    url: "http://localhost:8010/user/add",
                     // url:"http://localhost:8010/loan/loans",
                     type: 'POST',
                     data: $("#form").serialize(),
