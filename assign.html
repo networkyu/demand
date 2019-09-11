@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./css/jquery.toast.min.css">
   <script type="text/javascript" charset="utf8"
     src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script src="js/config.js"></script>
 </head>
 
 <body>
@@ -60,7 +61,7 @@
         var table = $('#table1').DataTable();
         var row = table.row('.selected').data();
         $.ajax({
-          url: "http://localhost:8010/demand/assignment",
+          url: getBaseUrl() + "/demand/assignment",
           // url:"http://localhost:8010/loan/loans",
           data: { "iduser": row[0], "iddemand": getParam("id"), "assigner": "" },
           type: 'POST',
@@ -81,7 +82,7 @@
         var table = $('#table1').DataTable();
         var row = table.row('.selected').data();
         $.ajax({
-          url: "http://localhost:8010/user/delete",
+          url: getBaseUrl() + "/user/delete",
           // url:"http://localhost:8010/loan/loans",
           data: { "iduser": row[0] },
           type: 'POST',
@@ -95,7 +96,7 @@
       });
 
       $.ajax({
-        url: "http://localhost:8010/user/all",
+        url: getBaseUrl() + "/user/all",
         type: 'GET',
         success: function (responsedata) {
           if (responsedata.message == "success") {

@@ -8,6 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="./meiziui/assets/css/amazeui.min.css">
     <link rel="stylesheet" href="./css/jquery.toast.min.css">
+    <script src="js/config.js"></script>
 
     <style>
         .header {
@@ -132,7 +133,7 @@
                 // $("#form").attr("action","http://localhost:8010/adduser");
                 // $("#form").submit(function(){return true;});
                 $.ajax({
-                    url: "http://localhost:8010/user/add",
+                    url: getBaseUrl() + "/user/add",
                     // url:"http://localhost:8010/loan/loans",
                     type: 'POST',
                     data: $("#form").serialize(),

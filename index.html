@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8"
 		src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+		<script src="js/config.js"></script>
 
 
 </head>
@@ -69,7 +70,7 @@
 			});
 			// 数据请求
 			$.ajax({
-				url: "http://localhost:8010/demand/all",
+				url: getBaseUrl() + "/demand/all",
 				// url:"http://localhost:8010/loan/loans",
 				type: 'GET',
 				success: function (responsedata) {
@@ -147,7 +148,7 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/demand/delete",
+					url: getBaseUrl() + "/demand/delete",
 					// url:"http://localhost:8010/loan/loans",
 					data: { "iddemand": row[0] },
 					type: 'POST',
@@ -167,7 +168,7 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/demand/complete",
+					url: getBaseUrl() + "/demand/complete",
 					// url:"http://localhost:8010/loan/loans",
 					data: { "iddemand": row[0] },
 					type: 'POST',
@@ -190,7 +191,7 @@
 				var table = $('#myTable').DataTable();
 				var row = table.row('.selected').data();
 				$.ajax({
-					url: "http://localhost:8010/demand/cancel",
+					url: getBaseUrl() +"/demand/cancel",
 					data: { "iddemand": row[0] },
 					type: 'POST',
 					success: function (responsedata) {

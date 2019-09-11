@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="meiziui/assets/css/amazeui.min.css" />
   <link rel="stylesheet" href="meiziui/assets/css/admin.css">
   <link rel="stylesheet" href="./css/jquery.toast.min.css">
+  <script src="js/config.js"></script>
 </head>
 
 <body>
@@ -84,10 +85,10 @@
       </div>
       <div class="col-sm-7 col-end">
         <select id="type" name="type">
-          <option value="0">后台接口</option>
-          <option value="1">前端页面</option>
-          <option value="2">前端JS</option>
-          <option value="3">数据库</option>
+          <option value="0">寿险核心</option>
+          <option value="1">核心打印平台</option>
+          <option value="2">电子打印平台</option>
+          <option value="3">银保通打印</option>
         </select>
       </div>
     </div>
@@ -128,7 +129,7 @@
           // $("#form").attr("action","http://localhost:8010/adduser");
           // $("#form").submit(function(){return true;});
           $.ajax({
-            url: "http://localhost:8010/demand/add",
+            url: getBaseUrl() + "/demand/add",
             // url:"http://localhost:8010/loan/loans",
             type: 'POST',
             data: $("#form").serialize(),
